@@ -13,8 +13,6 @@ function desencriptar(data: string) {
     posicion: 0,
   };
 
-  console.log(instruccion1);
-
   const mensaje: string = lineas[3];
 
   const checkPos = (caracter: string, inst) => {
