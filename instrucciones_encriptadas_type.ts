@@ -13,9 +13,11 @@ function desencriptar(data: string) {
     posicion: 0,
   };
 
+  console.log(instruccion1);
+
   const mensaje: string = lineas[3];
 
-  const checkPos = (caracter, inst) => {
+  const checkPos = (caracter: string, inst) => {
     if (caracter === inst.texto[inst.posicion]) {
       //revisar si este character es el que sigue en la instruccion
       inst.posicion++;
@@ -35,7 +37,6 @@ function desencriptar(data: string) {
         inst.incluido = true;
       }
     }
-    console.log("------");
   };
 
   for (let contMensaje = 0; contMensaje < mensaje.length; contMensaje++) {
@@ -59,3 +60,5 @@ const textoPrueba1 = `11 15 38
   XXcooomokkCCessseAAllFueeegooDLLKmmNN`;
 
 desencriptar(textoPrueba1);
+
+export { desencriptar };

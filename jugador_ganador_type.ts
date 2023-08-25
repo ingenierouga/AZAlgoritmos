@@ -1,7 +1,7 @@
-const obtenerGanador = (data) => {
+const obtenerGanador = (data: string) => {
   const lineas = data.trim().split("\n");
 
-  const rondas = lineas[0];
+  const rondas = parseInt(lineas[0]);
 
   //declaracion de objetos jugador, tiene la puntacion total, registro de la ventaja mas grande de cada jugador y bandera de si es el ganador "so far"
   let Jug1 = {
@@ -28,7 +28,7 @@ const obtenerGanador = (data) => {
     }
   };
 
-  for (rondaCont = 1; rondaCont <= rondas; rondaCont++) {
+  for (let rondaCont = 1; rondaCont <= rondas; rondaCont++) {
     //iteramos por cada ronda
     const resRond = lineas[rondaCont].trim().split(" ");
 
@@ -54,10 +54,12 @@ const obtenerGanador = (data) => {
 };
 
 const texto = `5
-140 82
-89 134
-90 110
-112 106
-88 90`;
+  140 82
+  89 134
+  90 110
+  112 106
+  88 90`;
 
 obtenerGanador(texto);
+
+export { obtenerGanador };
