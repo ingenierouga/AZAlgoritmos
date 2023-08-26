@@ -23,17 +23,19 @@ const desencriptar = (data) => {
       //si no fue el siguiente character, revisar que no sea el character pasado repetido
       //si es el character pasado repetido, no pasa nada
 
-      if (caracter !== inst.texto[inst.posicion - 1]) {
-        //si no fue el pasado ni el siguiente, reiniciar posicion a 0 pues el mensaje no esta completo
-        inst.posicion = 0;
+      //agregando validacion para la reviscion en el primer character, si no es no se debe revisar un char antes pues no existe
+      if (inst.posicion != 0) {
+        if (caracter !== inst.texto[inst.posicion - 1]) {
+          //si no fue el pasado ni el siguiente, reiniciar posicion a 0 pues el mensaje no esta completo
+          inst.posicion = 0;
+        }
       }
+    }
 
-      // y al final revisamos si la instruccion se completo
-      if (inst.texto.length === inst.posicion) {
-        //si esta completo, marcamos la flag de instruccion incluida
-
-        inst.incluido = true;
-      }
+    // aqui tambien tenia un error, esta validacion estaba dentro de el "else"pasado cuando se debe hacer siempre al final del chequeo
+    if (inst.texto.length === inst.posicion) {
+      //si esta completo, marcamos la flag de instruccion incluida
+      inst.incluido = true;
     }
   };
 
