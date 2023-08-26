@@ -55,7 +55,6 @@ public class Desencriptar {
         //esto estaba dentro del else pasado en JS Algo, arreglado en ahi tambien
         if (inst.getTexto().length() == inst.getPosicion()) {
             inst.setIncluido(true);
-            System.out.println("true");
         }
 
     }
