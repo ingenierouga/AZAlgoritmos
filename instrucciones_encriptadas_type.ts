@@ -55,7 +55,7 @@ function desencriptar() {
       checkPos(mensaje[contMensaje], instruccion1);
       checkPos(mensaje[contMensaje], instruccion2);
     } else {
-      contMensaje = mensaje.length;
+      break;
     }
   }
 
