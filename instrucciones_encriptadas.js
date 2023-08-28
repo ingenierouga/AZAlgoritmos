@@ -1,4 +1,13 @@
-const desencriptar = (data) => {
+const desencriptar = () => {
+  const fs = require("fs");
+  let data = "";
+  try {
+    data = fs.readFileSync("instrucciones_data.txt", "utf8");
+    //console.log("File content:", data);
+  } catch (err) {
+    console.error("Ocurrio un Error al leer el archivo con la data:", err);
+  }
+
   const lineas = data.trim().split("\n");
 
   const instruccion1 = {
@@ -59,4 +68,4 @@ CeseAlFuego
 CorranACubierto
 XXcooomokkCCessseAAllFueeegooDLLKmmNN`;
 
-desencriptar(textoPrueba1);
+desencriptar();

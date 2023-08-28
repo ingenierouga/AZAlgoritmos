@@ -1,11 +1,33 @@
+import java.util.Scanner;
+
 public class JugadorGanador {
     public static void main(String[] args) {
-        String data = "5\n" +
-                "140 82\n" +
-                "89 134\n" +
-                "90 110\n" +
-                "112 106\n" +
-                "88 90"; // Replace with your actual input data
+        //String data = "5\n" +
+        //        "140 82\n" +
+        //        "89 134\n" +
+        //        "90 110\n" +
+        //        "112 106\n" +
+        //        "88 90"; // Replace with your actual input data
+
+        //se modifico para que la data venga de el archivo de texto y no de un texto hardcodeado
+        String data ="";
+
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder holder = new StringBuilder();
+
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            if (line.isEmpty()) {
+                break; // Stop reading at an empty line
+            }
+            holder.append(line).append("\n");
+        }
+        data = holder.toString();
+
+        scanner.close();
+
+        //System.out.print(data);
+
         String[] lineas = data.trim().split("\n");
 
         int rondas = Integer.parseInt(lineas[0]);

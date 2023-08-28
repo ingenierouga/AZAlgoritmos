@@ -2,10 +2,30 @@ import java.util.Scanner;
 
 public class Desencriptar {
     public static void main(String[] args) {
-        String data = "11 15 38\n" +
-                "CeseAlFuego\n" +
-                "CorranACubierto\n" +
-                "XXcooomokkCCessseAAllFueeegooDLLKmmNN";
+        //String data = "11 15 38\n" +
+        //        "CeseAlFuego\n" +
+        //        "CorranACubierto\n" +
+        //        "XXcooomokkCCessseAAllFueeegooDLLKmmNN";
+        
+        //se modifico para que la data venga de el archivo de texto y no de un texto hardcodeado
+        String data ="";
+
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder holder = new StringBuilder();
+
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            if (line.isEmpty()) {
+                break; // Stop reading at an empty line
+            }
+            holder.append(line).append("\n");
+        }
+        data = holder.toString();
+
+        scanner.close();
+
+        //System.out.print(data);
+
         String[] lineas = data.trim().split("\n");
 
         //Instancio las "Instrucciones" y seteo el texto de la instruccion,

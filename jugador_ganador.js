@@ -1,4 +1,13 @@
-const obtenerGanador = (data) => {
+const obtenerGanador = () => {
+  const fs = require("fs");
+  let data = "";
+  try {
+    data = fs.readFileSync("jugador_ganador_data.txt", "utf8");
+    console.log("File content:", data);
+  } catch (err) {
+    console.error("Ocurrio un Error al leer el archivo con la data:", err);
+  }
+
   const lineas = data.trim().split("\n");
 
   const rondas = lineas[0];
@@ -60,4 +69,4 @@ const texto = `5
 112 106
 88 90`;
 
-obtenerGanador(texto);
+obtenerGanador();
