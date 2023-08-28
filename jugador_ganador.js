@@ -3,14 +3,14 @@ const obtenerGanador = () => {
   let data = "";
   try {
     data = fs.readFileSync("jugador_ganador_data.txt", "utf8");
-    console.log("File content:", data);
+    //console.log("File content:", data);
   } catch (err) {
     console.error("Ocurrio un Error al leer el archivo con la data:", err);
   }
 
   const lineas = data.trim().split("\n");
 
-  const rondas = lineas[0];
+  const rondas = lineas[0].trim();
 
   //declaracion de objetos jugador, tiene la puntacion total, registro de la ventaja mas grande de cada jugador y bandera de si es el ganador "so far"
   let Jug1 = {

@@ -11,13 +11,13 @@ function desencriptar() {
   const lineas = data.trim().split("\n");
 
   const instruccion1 = {
-    texto: lineas[1],
+    texto: lineas[1].trim(),
     incluido: false,
     posicion: 0,
   };
 
   const instruccion2 = {
-    texto: lineas[2],
+    texto: lineas[2].trim(),
     incluido: false,
     posicion: 0,
   };

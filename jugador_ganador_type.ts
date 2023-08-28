@@ -10,7 +10,7 @@ const obtenerGanador = () => {
 
   const lineas = data.trim().split("\n");
 
-  const rondas = parseInt(lineas[0]);
+  const rondas = parseInt(lineas[0].trim());
 
   //declaracion de objetos jugador, tiene la puntacion total, registro de la ventaja mas grande de cada jugador y bandera de si es el ganador "so far"
   let Jug1 = {

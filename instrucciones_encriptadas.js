@@ -3,7 +3,7 @@ const desencriptar = () => {
   let data = "";
   try {
     data = fs.readFileSync("instrucciones_data.txt", "utf8");
-    //console.log("File content:", data);
+    console.log("File content:", data);
   } catch (err) {
     console.error("Ocurrio un Error al leer el archivo con la data:", err);
   }
@@ -11,13 +11,13 @@ const desencriptar = () => {
   const lineas = data.trim().split("\n");
 
   const instruccion1 = {
-    texto: lineas[1],
+    texto: lineas[1].trim(),
     incluido: false,
     posicion: 0,
   };
 
   const instruccion2 = {
-    texto: lineas[2],
+    texto: lineas[2].trim(),
     incluido: false,
     posicion: 0,
   };
@@ -27,6 +27,12 @@ const desencriptar = () => {
   const checkPos = (caracter, inst) => {
     if (caracter === inst.texto[inst.posicion]) {
       //revisar si este character es el que sigue en la instruccion
+
+      console.log(inst.posicion);
+      console.log(caracter + " igual a: " + inst.texto[inst.posicion]);
+      console.log("instruccion : " + inst.texto);
+      console.log("tiene lenght de: " + inst.texto.length);
+
       inst.posicion++;
     } else {
       //si no fue el siguiente character, revisar que no sea el character pasado repetido
@@ -42,7 +48,9 @@ const desencriptar = () => {
     }
 
     // aqui tambien tenia un error, esta validacion estaba dentro de el "else"pasado cuando se debe hacer siempre al final del chequeo
+
     if (inst.texto.length === inst.posicion) {
+      console.log("true");
       //si esta completo, marcamos la flag de instruccion incluida
       inst.incluido = true;
     }
