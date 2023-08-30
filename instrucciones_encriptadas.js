@@ -117,7 +117,7 @@ if (require.main === module) {
   } else {
     //Mensaje Error Correcto
     console.log(
-      "Uso: node jugador_ganador_type.js <input_filename> <output_filename> - (opcional)"
+      "Uso: node instrucciones_encriptadas_type.js <input_filename> <output_filename> - (opcional)"
     );
   }
 }
