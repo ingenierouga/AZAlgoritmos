@@ -1,30 +1,18 @@
-function desencriptar() {
+function desencriptar(
+  inputFilename: string,
+  outputFilename: string = "instrucciones_encriptadas_type_results.txt"
+): void {
   const fs = require("fs");
-  let data = "";
-  try {
-    data = fs.readFileSync("instrucciones_data.txt", "utf8");
-    //console.log("File content:", data);
-  } catch (err) {
-    console.error("Ocurrio un Error al leer el archivo con la data:", err);
+  let lineas = new Array<string>();
+  let resultado: string[] = [];
+  let errores: string[] = [];
+  interface Instruccion {
+    texto: string;
+    incluido: boolean;
+    posicion: number;
   }
 
-  const lineas = data.trim().split("\n");
-
-  const instruccion1 = {
-    texto: lineas[1].trim(),
-    incluido: false,
-    posicion: 0,
-  };
-
-  const instruccion2 = {
-    texto: lineas[2].trim(),
-    incluido: false,
-    posicion: 0,
-  };
-
-  const mensaje: string = lineas[3];
-
-  const checkPos = (caracter: string, inst) => {
+  const checkPos = (caracter: string, inst: Instruccion) => {
     if (caracter === inst.texto[inst.posicion]) {
       //revisar si este character es el que sigue en la instruccion
       inst.posicion++;
@@ -49,19 +37,107 @@ function desencriptar() {
     }
   };
 
-  for (let contMensaje = 0; contMensaje < mensaje.length; contMensaje++) {
-    //reviso si alfuno de los mensajes ya fue validado, si ya fue no hay necesidad de validar mas characteres pues solo hay una instruccion por mensaje
-    if (!instruccion1.incluido && !instruccion2.incluido) {
-      checkPos(mensaje[contMensaje], instruccion1);
-      checkPos(mensaje[contMensaje], instruccion2);
+  try {
+    lineas = fs.readFileSync(inputFilename, "utf-8").split("\n");
+    const lengths = lineas[0].split(" ");
+    const regex = /^[a-zA-Z0-9]+$/;
+    if (lineas.length === 4) {
+      // Process the lines as needed
+
+      const instruccion1: Instruccion = {
+        texto: lineas[1].trim(),
+        incluido: false,
+        posicion: 0,
+      };
+
+      //validacion de que length de la primera instruccion sea segun la indicada
+      if (instruccion1.texto.length !== parseInt(lengths[0])) {
+        errores.push("La primera instruccion no tiene la longitud indicada");
+      }
+
+      //Validacion que el length sea permitido - entre 2 y 50
+      if (instruccion1.texto.length < 2 || instruccion1.texto.length > 50) {
+        errores.push("La primera instruccion tiene una longitud no permitida");
+      }
+
+      const instruccion2: Instruccion = {
+        texto: lineas[2].trim(),
+        incluido: false,
+        posicion: 0,
+      };
+
+      //validacion de que length de la segunda instruccion sea segun la indicada
+      if (instruccion2.texto.length !== parseInt(lengths[1])) {
+        errores.push("La segunda instruccion no tiene la longitud indicada");
+      }
+
+      //Validacion que el length sea permitido - entre 2 y 50
+      if (instruccion2.texto.length < 2 || instruccion2.texto.length > 50) {
+        errores.push("La segunda instruccion tiene una longitud no permitida");
+      }
+
+      const mensaje: string = lineas[3];
+      //validacion de longitud del mensaje
+      if (mensaje.length !== parseInt(lengths[2])) {
+        errores.push("el mensaje no tiene la longitud indicada");
+      }
+
+      //Validacion que el length del mensaje sea permitido - entre 3 y 5000
+      if (mensaje.length < 3 || mensaje.length > 5000) {
+        errores.push("El mensaje tiene una longitud no permitida");
+      }
+
+      //validacion para revisar el que mensaje solo tenga los characteres permitidos
+      if (!regex.test(mensaje)) {
+        errores.push("El mensaje contiene caracteres no permitidos");
+      }
+
+      //si hubo errores se imprimen los errores, si no, se imprime el resultado
+      if (errores.length === 0) {
+        for (let contMensaje = 0; contMensaje < mensaje.length; contMensaje++) {
+          //reviso si alfuno de los mensajes ya fue validado, si ya fue no hay necesidad de validar mas characteres pues solo hay una instruccion por mensaje
+          if (!instruccion1.incluido && !instruccion2.incluido) {
+            checkPos(mensaje[contMensaje], instruccion1);
+            checkPos(mensaje[contMensaje], instruccion2);
+          } else {
+            break;
+          }
+        }
+
+        //se guarda resultado
+        resultado.push(instruccion1.incluido ? "SI" : "NO");
+        resultado.push(instruccion2.incluido ? "SI" : "NO");
+      }
     } else {
-      break;
+      errores.push("Input Incorrecto, debe tener solo 4 lineas");
     }
+  } catch (error) {
+    console.log("Error:", error.message);
   }
 
-  //imprimir resultado
-  console.log(instruccion1.incluido ? "SI" : "NO");
-  console.log(instruccion2.incluido ? "SI" : "NO");
+  //si hubo errores se imprimen los errores, si no, se imprime el resultado
+  if (errores.length === 0) {
+    fs.writeFileSync(outputFilename, resultado.join("\n"));
+  } else {
+    fs.writeFileSync(outputFilename, errores.join("\n"));
+  }
+}
+
+if (require.main === module) {
+  const inputFilename = process.argv[2];
+  const outputFilename = process.argv[3];
+  if (inputFilename) {
+    if (outputFilename) {
+      desencriptar(inputFilename, outputFilename);
+    } else {
+      desencriptar(inputFilename);
+    }
+  } else {
+    //Mensaje Error Correcto
+    console.log(
+      "Uso: node jugador_ganador_type.js <input_filename> <output_filename> - (opcional)"
+    );
+  }
 }
 
 const textoPrueba1 = `11 15 38
@@ -69,6 +145,6 @@ const textoPrueba1 = `11 15 38
   CorranACubierto
   XXcooomokkCCessseAAllFueeegooDLLKmmNN`;
 
-desencriptar();
+//desencriptar();
 
 export { desencriptar };
