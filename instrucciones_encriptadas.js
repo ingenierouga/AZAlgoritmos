@@ -13,6 +13,11 @@ function desencriptar(inputFilename, outputFilename) {
     if (caracter === inst.texto[inst.posicion]) {
       //revisar si este character es el que sigue en la instruccion
       inst.posicion++;
+      //en cuanto se avansa en posicion en instruccion, reviso si la nueva letra de la instruccion es igual a la pasada
+      //si es igual se registra error por que en las instrucciones dice que "Ninguna instruccion en el libro de instrucciones contiene dos letras seguidas"
+      if (inst.texto[inst.posicion] === inst.texto[inst.posicion - 1]) {
+        errores.push("La instruccion contiene letras repetidas");
+      }
     } else {
       //si no fue el siguiente character, revisar que no sea el character pasado repetido
       //si es el character pasado repetido, no pasa nada
@@ -134,4 +139,4 @@ if (require.main === module) {
   }
 }
 var textoPrueba1 =
-  "11 15 38\n  CeseAlFuego\n  CorranACubierto\n  XXcooomokkCCessseAAllFueeegooDLLKmmNN";
+  "11 15 38\n  CeseAlFuego\n  CorranACubierto\n  XXcooomokkCCessseAAllFueeegooDLLKmmNNN";
