@@ -107,8 +107,13 @@ const obtenerGanador = (
       errores.push("Numero de lineas incorrecto");
     }
   } catch (error) {
-    errores.push(error.message);
-    console.log("Error:", error.message);
+    if (error instanceof Error) {
+      // ✅ TypeScript knows err is Error
+      errores.push(error.message);
+      console.log("Error:", error.message);
+    } else {
+      console.log("Unexpected error", error);
+    }
   }
 
   //si hubo errores se imprimen los errores, si no, se imprime el resultado
