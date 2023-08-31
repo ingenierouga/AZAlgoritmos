@@ -95,7 +95,13 @@ function desencriptar(inputFilename, outputFilename) {
       errores.push("Input Incorrecto, debe tener solo 4 lineas");
     }
   } catch (error) {
-    console.log("Error:", error.message);
+    if (error instanceof Error) {
+      // ✅ TypeScript knows err is Error
+      errores.push(error.message);
+      console.log("Error:", error.message);
+    } else {
+      console.log("Unexpected error", error);
+    }
   }
   //si hubo errores se imprimen los errores, si no, se imprime el resultado
   if (errores.length === 0) {

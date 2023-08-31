@@ -77,9 +77,8 @@ const obtenerGanador = (
           //se comparan totales para ver quien va ganando despues de esta ultima ronda
           //el texto dice que se puede asumir que un jugador siempre gana pero de igual manera agregare validacion por si empatan jugadores
           if (Jug1.puntuacion === Jug2.puntuacion) {
-            errores.push(
-              "Error: Jugadores empataron al final de la ronda, no se permiten empates"
-            );
+            // si se empata, se agrega los puntuajes al acumulado para mantener registro pero los ganadores se mantienen como antes
+            //moviendo validacion de empates al final pues al final siempre deberia haber un ganador
           } else {
             if (Jug1.puntuacion > Jug2.puntuacion) {
               //una vez obtenido el jugador se revisa si la ventaja obtenida es la mayor
@@ -95,12 +94,18 @@ const obtenerGanador = (
         }
       }
 
-      if (Jug1.ganando) {
-        resultado = "1 " + Jug1.ventajaMayor;
-        //console.log("1 " + Jug1.ventajaMayor);
+      //agregando validacion para empate en todos los partidos
+      //si los dos jugadores tienen la flag de "ganando" como fasa significa que en todas las partidas empataron y nunca entro a "verificarVentajaMayor"
+      if (Jug1.ganando || Jug2.ganando) {
+        if (Jug1.ganando) {
+          resultado = "1 " + Jug1.ventajaMayor;
+          //console.log("1 " + Jug1.ventajaMayor);
+        } else {
+          resultado = "2 " + Jug2.ventajaMayor;
+          //console.log("2 " + Jug2.ventajaMayor);
+        }
       } else {
-        resultado = "2 " + Jug2.ventajaMayor;
-        //console.log("2 " + Jug2.ventajaMayor);
+        errores.push("los dos jugadores empataron todas las rondas");
       }
     } else {
       //console.log("Numero de lineas incorrecto");
