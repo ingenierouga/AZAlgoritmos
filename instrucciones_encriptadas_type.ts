@@ -96,10 +96,18 @@ function desencriptar(
       if (errores.length === 0) {
         for (let contMensaje = 0; contMensaje < mensaje.length; contMensaje++) {
           //reviso si alfuno de los mensajes ya fue validado, si ya fue no hay necesidad de validar mas characteres pues solo hay una instruccion por mensaje
-          if (!instruccion1.incluido && !instruccion2.incluido) {
+
+          //como hay una prueba que al parecer revisa si hay dos instrucciones en el mensaje voy a modificar la logica
+          //si un mensaje ya se encontro solo no voy a seguir "checandoPos" en ese mensaje, y solo buscare el otro
+          if (!instruccion1.incluido) {
             checkPos(mensaje[contMensaje], instruccion1);
+          }
+          if (!instruccion2.incluido) {
             checkPos(mensaje[contMensaje], instruccion2);
-          } else {
+          }
+
+          if (instruccion1.incluido && instruccion2.incluido) {
+            //ahora si, si las dos intrucciones ya occurieron no hay necesidad de hacer mas checks
             break;
           }
         }
