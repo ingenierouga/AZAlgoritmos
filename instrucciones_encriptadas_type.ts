@@ -112,8 +112,13 @@ function desencriptar(
             checkPos(mensaje[contMensaje], instruccion2);
           }
 
-          if (instruccion1.incluido && instruccion2.incluido) {
+          if (
+            (instruccion1.incluido && instruccion2.incluido) ||
+            errores.length !== 0
+          ) {
             //ahora si, si las dos intrucciones ya occurieron no hay necesidad de hacer mas checks
+            //tambien, si en checkPos se detecto una instruccion con characteres repetidos, se agrega el error
+            //si se detecto error se corta for y se imprimen errores
             break;
           }
         }
