@@ -1,57 +1,124 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class Desencriptar {
     public static void main(String[] args) {
-        //String data = "11 15 38\n" +
-        //        "CeseAlFuego\n" +
-        //        "CorranACubierto\n" +
-        //        "XXcooomokkCCessseAAllFueeegooDLLKmmNN";
-        
-        //se modifico para que la data venga de el archivo de texto y no de un texto hardcodeado
-        String data ="";
+        List<String> lineas = new ArrayList<>();
+        List<String> resultado = new ArrayList<>();
+        List<String> errores = new ArrayList<>();
+        Pattern regex = Pattern.compile("^[a-zA-Z0-9]+$");
 
-        Scanner scanner = new Scanner(System.in);
-        StringBuilder holder = new StringBuilder();
 
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if (line.isEmpty()) {
-                break; // Stop reading at an empty line
+        if (args.length >= 1) {
+            String inputFilename = args[0];
+            System.out.println(args[0]);
+            //harcoded output file path, used on debug
+            //String outputFilename = args.length >= 2 ? args[1] : "C:\\Users\\ingen\\IdeaProjects\\AZAlgo\\src\\instrucciones_encriptadas_java_results.txt";
+
+            //Dinamic output file path
+            String outputFilename = args.length >= 2 ? args[1] : "instrucciones_encriptadas_java_results.txt";
+
+
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(inputFilename));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    lineas.add(line);
+                }
+                reader.close();
+
+                if (lineas.size() == 4) {
+                    String[] lengths = lineas.get(0).split(" ");
+
+                    //Instancio las "Instrucciones" y seteo el texto de la instruccion,
+                    //el constructor espera el texto y las otras dos propiedades estan seteadas por default
+                    String instruccion1Texto = lineas.get(1).trim();
+                    Instruccion instruccion1 = new Instruccion(instruccion1Texto);
+
+                    String mensaje = lineas.get(3);
+
+
+                    //validacion de que length de la primera instruccion sea segun la indicada
+                    if (instruccion1Texto.length() != Integer.parseInt(lengths[0])) {
+                        errores.add("La primera instruccion no tiene la longitud indicada");
+                    }
+                    //Validacion que el length sea permitido - entre 2 y 50
+                    if (instruccion1Texto.length() < 2 || instruccion1Texto.length() > 50) {
+                        errores.add("La primera instruccion tiene una longitud no permitida");
+                    }
+
+                    String instruccion2Texto = lineas.get(2).trim();
+                    Instruccion instruccion2 = new Instruccion(instruccion2Texto);
+
+                    if (instruccion2Texto.length() != Integer.parseInt(lengths[1])) {
+                        errores.add("La segunda instruccion no tiene la longitud indicada");
+                    }
+                    if (instruccion2Texto.length() < 2 || instruccion2Texto.length() > 50) {
+                        errores.add("La segunda instruccion tiene una longitud no permitida");
+                    }
+
+
+                    if (mensaje.length() != Integer.parseInt(lengths[2])) {
+                        errores.add("El mensaje no tiene la longitud indicada");
+                    }
+                    if (mensaje.length() < 3 || mensaje.length() > 5000) {
+                        errores.add("El mensaje tiene una longitud no permitida");
+                    }
+
+                    Matcher matcher = regex.matcher(mensaje);
+                    if (!matcher.matches()) {
+                        errores.add("El mensaje contiene caracteres no permitidos");
+                    }
+
+                    if (errores.isEmpty()) {
+                        for (int contMensaje = 0; contMensaje < mensaje.length(); contMensaje++) {
+                            if (!instruccion1.getIncluido() && !instruccion2.getIncluido()) {
+                                checkPos(mensaje.charAt(contMensaje), instruccion1);
+                                checkPos(mensaje.charAt(contMensaje), instruccion2);
+                            } else {
+                                break;
+                            }
+                        }
+
+                        resultado.add(instruccion1.getIncluido() ? "SI" : "NO");
+                        resultado.add(instruccion2.getIncluido() ? "SI" : "NO");
+                    }
+                } else {
+                    errores.add("Input Incorrecto, debe tener solo 4 lineas");
+                }
+            } catch (IOException e) {
+                System.out.println("Error: " + e.getMessage());
             }
-            holder.append(line).append("\n");
-        }
-        data = holder.toString();
 
-        scanner.close();
-
-        //System.out.print(data);
-
-        String[] lineas = data.trim().split("\n");
-
-        //Instancio las "Instrucciones" y seteo el texto de la instruccion,
-        //el constructor espera el texto y las otras dos propiedades estan seteadas por default
-        Instruction instruction1 = new Instruction(lineas[1]);
-        Instruction instruction2 = new Instruction(lineas[2]);
-
-        String mensaje = lineas[3];
-
-        //itero por cada char en el mensaje, revisando el char con la posicion de cada inst
-        //una vez completada la instruccion salgo del for pues solo hay una instruccion por mensaje
-        for (int contMensaje = 0; contMensaje < mensaje.length(); contMensaje++) {
-            if (!instruction1.getIncluido() && !instruction2.getIncluido()) {
-                checkPos(mensaje.charAt(contMensaje), instruction1);
-                checkPos(mensaje.charAt(contMensaje), instruction2);
-            } else {
-                contMensaje = mensaje.length();
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilename));
+                if (errores.isEmpty()) {
+                    for (String res : resultado) {
+                        writer.write(res + "\n");
+                    }
+                } else {
+                    for (String err : errores) {
+                        writer.write(err + "\n");
+                    }
+                }
+                writer.close();
+            } catch (IOException e) {
+                System.out.println("Error: " + e.getMessage());
             }
+
+
+
+        } else {
+            System.out.println("Uso: java Desencriptar.java <input_filename> <output_filename> - (opcional)");
         }
 
-        System.out.println(instruction1.getIncluido() ? "SI" : "NO");
-        System.out.println(instruction2.getIncluido() ? "SI" : "NO");
     }
 
     //creo mi funcion para comparar character actual con posicion actual en mensaje/instruccion
-    private static void checkPos(char character, Instruction inst) {
+    public static void checkPos(char character, Instruccion inst) {
 
         if (character == inst.getTexto().charAt(inst.getPosicion()) ) {
             //reviso si este character es el que sigue en la instruccion
@@ -78,41 +145,42 @@ public class Desencriptar {
         }
 
     }
+
+    static class Instruccion {
+        //declaro el objeto que uso para el registro de las instrucciones y si se incluyen o no
+        //texto contiene la instruccions
+        //incluido es la bandera que me se marca como "true" una vez verificado el mensaje
+        //Posicion me dice que tantas posicione de la instruccion han ocurrido sin interrupcion
+        private String texto;
+        private boolean incluido;
+        private int posicion;
+
+        public Instruccion(String text) {
+            this.texto = text;
+            this.incluido= false;
+            this.posicion = 0;
+        }
+
+        //declaro getters y setters para las propiedades de la "Instruccion"
+        public String getTexto() {
+            return texto;
+        }
+
+        public boolean getIncluido() {
+            return incluido;
+        }
+
+        public void setIncluido(boolean incluidoParam) {
+            this.incluido = incluidoParam;
+        }
+
+        public int getPosicion() {
+            return posicion;
+        }
+
+        public void setPosicion(int posicionParam) {
+            this.posicion = posicionParam;
+        }
+    }
 }
 
-class Instruction {
-    //declaro el objeto que uso para el registro de las instrucciones y si se incluyen o no
-    //texto contiene la instruccions
-    //incluido es la bandera que me se marca como "true" una vez verificado el mensaje
-    //Posicion me dice que tantas posicione de la instruccion han ocurrido sin interrupcion
-    private final String texto;
-    private boolean incluido;
-    private int posicion;
-
-    public Instruction(String text) {
-        this.texto = text;
-        this.incluido= false;
-        this.posicion = 0;
-    }
-
-    //declaro getters y setters para las propiedades de la "Instruccion"
-    public String getTexto() {
-        return texto;
-    }
-
-    public boolean getIncluido() {
-        return incluido;
-    }
-
-    public void setIncluido(boolean incluidoParam) {
-        this.incluido = incluidoParam;
-    }
-
-    public int getPosicion() {
-        return posicion;
-    }
-
-    public void setPosicion(int posicionParam) {
-        this.posicion = posicionParam;
-    }
-}
